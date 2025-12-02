@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Email - AutomataNC</title>
+    <script src="https://kit.fontawesome.com/6a4bedafcb.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="shortcut icon" href="../img/logo-favicon.png" type="image/x-icon">
+    <style>
+        /* Ajuste específico para que la regex larga se lea bien */
+        .regex-display {
+            font-size: 0.75rem !important; /* Letra más pequeña para que quepa */
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        /* Ajuste para quitar el scroll del body principal */
+        body.simulator-mode {
+            display: block;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="simulator-mode">
+
+    <div class="sim-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fa-solid fa-star"></i> Automata<span>NC</span></h3>
+            </div>
+
+            <div class="controls-panel">
+                <div class="input-group">
+                    <label>Validar Email:</label>
+                    <input type="text" placeholder="ej: usuario@dominio.com" id="inputString" autocomplete="off">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-play" title="Validar Cadena" id="validar">
+                        <i class="fa-solid fa-play"></i> Validar
+                    </button>
+                    <button class="btn-stop" title="Limpiar todo" id="limpiar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+
+                <hr class="divider">
+
+                <div class="explanation-container">
+                    <label><i class="fa-solid fa-list-ol"></i> Log del proceso:</label>
+                    <div class="explanation-box" id="explanationBox">
+                        <p class="step" style="color:#aaa; font-style:italic;" id="recorrido">Esperando entrada...</p>
+                        
+                        </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="../index.html" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            
+            <nav class="toolbar">
+                <div class="display-container">
+                    <span class="display-label">Estado Actual:</span>
+                    <div class="digital-display path-display" id="estadoActual">
+                        Esperando...
+                    </div>
+                </div>
+
+                <div class="display-container" style="flex-grow: 2;">
+                    <span class="display-label">Expresión Regular (Email Simplificado):</span>
+                    <div class="digital-display regex-display" title="Regex Completa">
+                        ^[a-z0-9]+([._-]?[a-z0-9]+)*@[a-z0-9]+(-[a-z0-9]+)*\.[a-z]{2,}$
+                    </div>
+                </div>
+            </nav>
+
+            <div class="canvas-container">
+                <pre class="mermaid">
+                    ---
+                    config:
+                    theme: 'base'
+                    themeVariables:
+                        background: '#0f1724'
+                        primaryColor: '#0b1220'
+                        primaryTextColor: '#e6eef8'
+                        primaryBorderColor: '#60a5fa'
+                        lineColor: '#60a5fa'
+                        secondaryColor: '#34d399'
+                        tertiaryColor: '#071023'
+                        noteBkgColor: '#081227'
+                        noteTextColor: '#e6eef8'
+                    ---
+                    stateDiagram-v2
+                    direction LR
+                    [*] --> q0
+                    q0 --> q1: L | D | _
+                    q0 --> qØ: . | - | @ | otros
+                    q1 --> q1: L | D | _
+                    q1 --> q2: . | -
+                    q1 --> q3: @
+                    q1 --> qØ: otros
+                    q2 --> q1: L | D | _
+                    q2 --> q2: . | -
+                    q2 --> qØ: @ | otros
+                    q3 --> q6: L | D
+                    q3 --> qØ: _ | . | - | @ | otros
+                    q6 --> q6: L | D | _
+                    q6 --> q4: .
+                    q6 --> q7: -
+                    q6 --> qØ: @ | otros
+                    q7 --> q6: L | D | _
+                    q7 --> q4: .
+                    q7 --> q7: -
+                    q7 --> qØ: @ | otros
+                    q4 --> q5: L | D
+                    q4 --> qØ: _ | . | - | @ | otros
+                    q5 --> q5: L | D | _
+                    q5 --> q4: .
+                    q5 --> q8: -
+                    q5 --> qØ: @ | otros
+                    q8 --> q5: L | D | _
+                    q8 --> q4: .
+                    q8 --> q8: -
+                    q8 --> qØ: @ | otros
+                    qØ --> qØ: L | D | _ | . | - | @ | otros
+                    q5 --> [*]
+                </pre>
+            </div>
+        </main>
+    </div>
+
+    <!-- Librería Mermaid -->
+    <script type="module">
+        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+        mermaid.initialize({
+        startOnLoad: true,
+        // theme: "forest"
+        });
+    </script>
+
+    <script src="../js/automata-1.js"></script>
+</body>
+</html>

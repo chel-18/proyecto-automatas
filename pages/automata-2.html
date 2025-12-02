@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Múltiplo de 3 - AutomataNC</title>
+    <script src="https://kit.fontawesome.com/6a4bedafcb.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="shortcut icon" href="../img/logo-favicon.png" type="image/x-icon">
+    <style>
+        /* Ajuste para quitar el scroll del body principal */
+        body.simulator-mode {
+            display: block;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="simulator-mode">
+
+    <div class="sim-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fa-solid fa-star"></i> Automata<span>NC</span></h3>
+            </div>
+
+            <div class="controls-panel">
+                <div class="input-group">
+                    <label>Validar Múltiplo de 3:</label>
+                    <input type="text" placeholder="Ej: 111, 12, 33..." id="inputString" autocomplete="off" maxlength="15">
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-play" title="Validar Cadena" id="validar">
+                        <i class="fa-solid fa-play"></i> Validar
+                    </button>
+                    <button class="btn-stop" title="Limpiar todo" id="limpiar">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+
+                <hr class="divider">
+
+                <div class="explanation-container">
+                    <label><i class="fa-solid fa-calculator"></i> Cálculo de restos:</label>
+                    <div class="explanation-box" id="explanationBox">
+                        <p class="step" style="color:#aaa; font-style:italic;" id="recorrido">
+                            Ingrese una cadena de números {1, 2, 3}.<br><br>
+                            El autómata sumará los dígitos y verificará si el total es divisible por 3.
+                        </p>
+                        </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="../index.html" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            
+            <nav class="toolbar">
+                <div class="display-container">
+                    <span class="display-label">Estado (Resto):</span>
+                    <div class="digital-display path-display" id="estadoActual">
+                        Esperando...
+                    </div>
+                </div>
+
+                <div class="display-container" style="flex-grow: 2;">
+                    <span class="display-label">Definición Regular:</span>
+                    <div class="digital-display regex-display" title="Definición">
+                        (1|2|3)* tal que Σ(dígitos) mod 3 = 0
+                    </div>
+                </div>
+            </nav>
+
+            <div class="canvas-container">
+                <pre class="mermaid">
+                    ---
+                    config:
+                    theme: 'base'
+                    themeVariables:
+                        background: '#0f1724'
+                        primaryColor: '#0b1220'
+                        primaryTextColor: '#e6eef8'
+                        primaryBorderColor: '#60a5fa'
+                        lineColor: '#60a5fa'
+                        secondaryColor: '#34d399'
+                        tertiaryColor: '#071023'
+                        noteBkgColor: '#081227'
+                        noteTextColor: '#e6eef8'
+                    ---
+                    stateDiagram-v2
+                    direction LR
+                    [*] --> q0
+                    q0 --> [*]
+                    q0 --> q1 : 1 
+                    q0 --> q2 : 2
+                    q0 --> q0 : 3
+                    q1 --> q2 : 1
+                    q1 --> q0 : 2
+                    q1 --> q1 : 3
+                    q2 --> q1 : 2
+                    q2 --> q0 : 1
+                    q2 --> q2 : 3
+                    q0 --> qØ : 4/5/6/7/8/9/0/otros
+                </pre>
+            </div>
+        </main>
+    </div>
+
+    <!-- Librería Mermaid -->
+    <script type="module">
+        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+        mermaid.initialize({
+        startOnLoad: true,
+        // theme: "forest"
+        });
+    </script>
+
+    <script src="../js/automata-2.js"></script>
+
+</body>
+</html>
